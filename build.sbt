@@ -9,6 +9,7 @@ console / initialCommands := """
       |import cats.effect.unsafe.implicits.global
     """.trim.stripMargin
 
-libraryDependencies ++= Seq(
-  "org.creativescala" %% "doodle" % "0.20.0"
-)
+
+
+libraryDependencies ++= Seq("org.typelevel" %% "cats-effect" % "3.5.1",
+        "org.creativescala" %% "doodle" % "0.20.0")

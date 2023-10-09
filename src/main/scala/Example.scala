@@ -39,10 +39,26 @@ object Example {
 
   val frame = Frame.default.withSize(600, 600).withCenterAtOrigin
 
+ 
+  
+
   @main def go(): Unit = {
-    image.draw()
+    //image.draw()
 
     // Comment out the above and uncomment the below to display the animation
     // animation.run(frame)
+
+    // ----- Expressive Expressions-----
+    //Image.circle(100).draw()
+    //Image.rectangle(150,50).draw()
+    //Image.triangle(100,50).draw()
+    
+    /*
+    Image.circle(1).draw()
+    Image.circle(10).draw()
+    Image.circle(100).draw()
+    */
+
+    
   }
 }
