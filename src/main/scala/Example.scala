@@ -16,7 +16,7 @@ object Example {
     Image
       .circle(100)
       .fillColor(Color.red)
-      .on(Image.circle(200).fillColor(Color.aquamarine))
+      .on(Image.circle(200).fillColor(Color.red))
       .on(Image.circle(300).fillColor(Color.steelBlue))
 
   val animation =
