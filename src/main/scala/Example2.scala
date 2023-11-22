@@ -129,23 +129,37 @@ import doodle.java2d.*
 
 
     def gradientBoxes(count: Int, color: Color): Image =
+      val aBox = Image.square(20).fillColor(Color.royalBlue)
       count match {
         case 0 => Image.empty
         case n =>
-          Image
-            .square(20)
-            .fillColor(color)
-            .beside(gradientBoxes(n-1, color.spin(1.radians)))
+         aBox
+          .fillColor(color)
+          .beside(gradientBoxes(n-1, color.spin(1.radians)))
       }
 
     def concentricCircles(count: Int, size: Int, color: Color): Image =
+      def circle (size: Int, color: Color): Image = Image.circle(size).strokeColor(color)
       count match
         case 0 => Image.empty
         case n =>
-          Image
-            .circle(size)
-            .strokeColor(color)
+          circle(size, color)
             .on(concentricCircles(n - 1, size + 10, color.spin(1.radians)))
+
+// ----- Exercise: colorful chessboard ----- 
+
+    def colorfulChessboard(count: Int, color: Color) : Image =
+      count match {
+        case 0 =>             
+          val contrast = color.spin(180.degrees)
+          val aBox = Image.square(40)
+
+          aBox.fillColor(color).beside(aBox.fillColor(contrast)).above(aBox.fillColor(contrast).beside(aBox.fillColor(color)))
+        case n =>
+          colorfulChessboard(n-1, color.spin(3.degrees)).beside(colorfulChessboard(n-1, color.spin(10.degrees))).above(colorfulChessboard(n-1, color.spin(30.degrees)).beside(colorfulChessboard(n-1, color.spin(100.degrees))))
+          }
+
+// ----- Points, Paths, and Polygons ----- 
 
     def polygonPoints(sides: Int, radius: Int): Image =
       val dot = Image.circle(5).fillColor(Color.darkViolet)
@@ -155,6 +169,22 @@ import doodle.java2d.*
           case n => dot.at(Point(radius, (360 / sides).degrees)).on(loop(n - 1))
       loop(sides)
 
+      //---- test for artwork:
+    
+    val rectangleH = Image.rectangle(300,100).fillColor(Color.darkViolet)
+    val rectangleV = Image.rectangle(100,300).fillColor(Color.darkViolet)
+    val vertices =
+       rectangleV.at(Point(120, 0.degrees))
+        .on(rectangleH.at(Point(120, 90.degrees)))
+        .on(rectangleV.at(Point(120, -180.degrees)))
+        .on(rectangleH.at(Point(120, -90.degrees)))
+        .on(
+          rectangleV.at(Point(100, 0.degrees))
+            .on(rectangleH.at(Point(100, 90.degrees)))
+            .on(rectangleV.at(Point(100, -180.degrees)))
+            .on(rectangleH.at(Point(100, -90.degrees))))
+
+    //vertices.draw()
 
 
 
@@ -162,19 +192,21 @@ import doodle.java2d.*
 
 
 
-    polygonPoints(5, 50).draw()
-    boxesTwo(3).draw()
-    stacks(3).draw()
-    alternatingRow(5).draw()
-    funRow(5).draw()
-    cross(10).draw()
-    chessboard(4).draw()
-    sierpinski(3).draw()
-    chessboardTwo(3).draw()
-    concentricCircles(5, 20, Color.royalBlue).draw()
-    gradientBoxes(4, Color.royalBlue).draw()
+    //stacks(3).draw()
+    //alternatingRow(5).draw()
+    // funRow(5).draw()
+    // cross(10).draw()
+    // chessboard(4).draw()
+    // sierpinski(3).draw()
+    // chessboardTwo(3).draw()
+    //  boxesTwo(3).draw()
+    // gradientBoxes(4, Color.royalBlue).draw()
+    // concentricCircles(5, 200, Color.royalBlue).draw()
+    //colorfulChessboard(2, Color.royalBlue).draw()
 
 
+    //polygonPoints(5, 50).draw()
+   
   
 
 
