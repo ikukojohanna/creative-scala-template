@@ -12,19 +12,21 @@ import doodle.java2d.*
   def scalaBridge(): Unit =
 
 
-    // ----- A Line of Boxes ----- 
 
 
+/*
     val aBox = Image.square(20).fillColor(Color.royalBlue)
     val redBox = Image.square(20).fillColor(Color.darkRed)
     val aSecondBox = Image.square(side = 40).fillColor(Color.antiqueWhite)
-    val aTriangle = Image.triangle(20,20).fillColor(Color.royalBlue)
+    val aTriangle = Image.triangle(20,20).fillColor(Color.royalBlue)*/
     val aRectangle = Image.rectangle(20, 40).fillColor(Color.royalBlue)
     val aSecondRectangle = Image.rectangle(40, 20).fillColor(Color.royalBlue)
 
 
+// ----- A Line of Boxes ----- 
 
     def boxes(count: Int): Image =
+      val aBox = Image.square(20).fillColor(Color.royalBlue)
       count match 
         case 0 => Image.empty
         case n => aBox.beside(boxes(n-1))
@@ -32,6 +34,7 @@ import doodle.java2d.*
 // ----- The Natural Numbers ----- 
       
     def stacks(count: Int): Image =
+      val aBox = Image.square(20).fillColor(Color.royalBlue)
       count match 
         case 0 => Image.empty
         case n => aBox.above(stacks(n-1))
@@ -39,6 +42,8 @@ import doodle.java2d.*
 
       
     def alternatingRow(count: Int) : Image =
+      val aBox = Image.square(20).fillColor(Color.royalBlue)
+      val aSecondBox = Image.square(side = 40).fillColor(Color.antiqueWhite)
       count match 
         case 0 => Image.empty
         case n if (n % 2 == 0) => aBox.beside(alternatingRow(n-1))
@@ -56,6 +61,8 @@ import doodle.java2d.*
    
 
     def cross(count: Int) : Image =
+      val aBox = Image.square(20).fillColor(Color.royalBlue)
+      val redBox = Image.square(20).fillColor(Color.darkRed)
       count match 
         case 0 => redBox
         case n => aBox.above(aBox.beside(cross(n-1).beside(aBox))).above(aBox)
@@ -65,14 +72,20 @@ import doodle.java2d.*
 // ----- Fractals ----- 
 
     def chessboard(count: Int) : Image =
+      val blueBox = Image.square(20).fillColor(Color.royalBlue)
+      val redBox = Image.square(20).fillColor(Color.darkRed)
+
       count match {
-        case 0 => redBox.beside(aBox).above(aBox.beside(redBox))
+        case 0 => redBox.beside(blueBox).above(blueBox.beside(redBox))
         case n =>
           val unit : Image = chessboard(n-1)
           unit.beside(unit).above(unit.beside(unit))
       }
 
+
+    
     def sierpinski(count: Int): Image =
+      val aTriangle = Image.triangle(20,20).fillColor(Color.royalBlue)
       count match {
         case 0 => aTriangle.above(aTriangle.beside(aTriangle))
         case n =>
@@ -81,12 +94,12 @@ import doodle.java2d.*
       }
 
   
+// ----- Nested Methods ----- 
 
 
     def chessboardTwo(count: Int): Image = {
       val blackSquare = Image.square(30).fillColor(Color.black)
       val redSquare = Image.square(30).fillColor(Color.red)
-
       val base =
         (redSquare beside blackSquare) above (blackSquare beside redSquare)
 
@@ -109,6 +122,11 @@ import doodle.java2d.*
           case 0 => Image.empty
           case n => aBox.beside(boxes(n - 1))
       loop(count)
+
+
+
+// ----- Auxiliary Parameters ----- 
+
 
     def gradientBoxes(count: Int, color: Color): Image =
       count match {
@@ -144,17 +162,17 @@ import doodle.java2d.*
 
 
 
-    //polygonPoints(5, 50).draw()
-    //boxesTwo(3).draw()
-    //stacks(3).draw()
-    //alternatingRow(5).draw()
-    //funRow(5).draw()
-    //cross(10).draw()
-    //chessboard(4).draw()
-    //sierpinski(3).draw()
+    polygonPoints(5, 50).draw()
+    boxesTwo(3).draw()
+    stacks(3).draw()
+    alternatingRow(5).draw()
+    funRow(5).draw()
+    cross(10).draw()
+    chessboard(4).draw()
+    sierpinski(3).draw()
     chessboardTwo(3).draw()
-    //concentricCircles(5, 20, Color.royalBlue).draw()
-        //gradientBoxes(4, Color.royalBlue).draw()
+    concentricCircles(5, 20, Color.royalBlue).draw()
+    gradientBoxes(4, Color.royalBlue).draw()
 
 
   
