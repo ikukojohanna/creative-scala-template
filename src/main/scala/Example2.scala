@@ -6,22 +6,12 @@ import doodle.image.*
 import doodle.syntax.all.*
 import doodle.image.syntax.all.*
 import doodle.java2d.*
-
+import fs2.concurrent.Channel.Closed
 
 @main
   def scalaBridge(): Unit =
 
-
-
-
-/*
-    val aBox = Image.square(20).fillColor(Color.royalBlue)
-    val redBox = Image.square(20).fillColor(Color.darkRed)
-    val aSecondBox = Image.square(side = 40).fillColor(Color.antiqueWhite)
-    val aTriangle = Image.triangle(20,20).fillColor(Color.royalBlue)*/
-    val aRectangle = Image.rectangle(20, 40).fillColor(Color.royalBlue)
-    val aSecondRectangle = Image.rectangle(40, 20).fillColor(Color.royalBlue)
-
+//---------------------------------------------------- Structural Recursion over the Natural Numbers --------------------------------------------------------------------
 
 // ----- A Line of Boxes ----- 
 
@@ -38,6 +28,8 @@ import doodle.java2d.*
       count match 
         case 0 => Image.empty
         case n => aBox.above(stacks(n-1))
+        
+    //stacks(3).draw()
 
 
       
@@ -48,7 +40,8 @@ import doodle.java2d.*
         case 0 => Image.empty
         case n if (n % 2 == 0) => aBox.beside(alternatingRow(n-1))
         case n => aSecondBox.beside(alternatingRow(n-1))
-      
+     
+    //alternatingRow(5).draw()
 
   
 
@@ -57,7 +50,7 @@ import doodle.java2d.*
         case 0 => Image.empty
         case n => Image.star(20, n * 10, 10).fillColor(Color.royalBlue.spin((10 * n).degrees)).beside(funRow(n-1))
       
-
+    // funRow(5).draw()
    
 
     def cross(count: Int) : Image =
@@ -67,9 +60,10 @@ import doodle.java2d.*
         case 0 => redBox
         case n => aBox.above(aBox.beside(cross(n-1).beside(aBox))).above(aBox)
       
+    // cross(10).draw()
 
 
-// ----- Fractals ----- 
+//----------------------------------------------------------------- Fractals -----------------------------------------------------------------------
 
     def chessboard(count: Int) : Image =
       val blueBox = Image.square(20).fillColor(Color.royalBlue)
@@ -82,6 +76,7 @@ import doodle.java2d.*
           unit.beside(unit).above(unit.beside(unit))
       }
 
+    // chessboard(4).draw()
 
     
     def sierpinski(count: Int): Image =
@@ -92,6 +87,12 @@ import doodle.java2d.*
           val unit : Image = sierpinski(n-1)
           unit.above(unit.beside(unit))
       }
+
+    // sierpinski(3).draw()
+ 
+    
+    
+    
 
   
 // ----- Nested Methods ----- 
@@ -114,6 +115,8 @@ import doodle.java2d.*
       loop(count)
     }
 
+    // chessboardTwo(3).draw()
+
 
     def boxesTwo(count: Int): Image =
       val aBox = Image.square(20).fillColor(Color.royalBlue)
@@ -123,6 +126,7 @@ import doodle.java2d.*
           case n => aBox.beside(boxes(n - 1))
       loop(count)
 
+    // boxesTwo(3).draw()
 
 
 // ----- Auxiliary Parameters ----- 
@@ -130,13 +134,14 @@ import doodle.java2d.*
 
     def gradientBoxes(count: Int, color: Color): Image =
       val aBox = Image.square(20).fillColor(Color.royalBlue)
-      count match {
+      count match 
         case 0 => Image.empty
         case n =>
          aBox
           .fillColor(color)
           .beside(gradientBoxes(n-1, color.spin(1.radians)))
-      }
+
+    // gradientBoxes(4, Color.royalBlue).draw()
 
     def concentricCircles(count: Int, size: Int, color: Color): Image =
       def circle (size: Int, color: Color): Image = Image.circle(size).strokeColor(color)
@@ -146,10 +151,12 @@ import doodle.java2d.*
           circle(size, color)
             .on(concentricCircles(n - 1, size + 10, color.spin(1.radians)))
 
+    // concentricCircles(5, 200, Color.royalBlue).draw()
+
 // ----- Exercise: colorful chessboard ----- 
 
     def colorfulChessboard(count: Int, color: Color) : Image =
-      count match {
+      count match 
         case 0 =>             
           val contrast = color.spin(180.degrees)
           val aBox = Image.square(40)
@@ -157,17 +164,112 @@ import doodle.java2d.*
           aBox.fillColor(color).beside(aBox.fillColor(contrast)).above(aBox.fillColor(contrast).beside(aBox.fillColor(color)))
         case n =>
           colorfulChessboard(n-1, color.spin(3.degrees)).beside(colorfulChessboard(n-1, color.spin(10.degrees))).above(colorfulChessboard(n-1, color.spin(30.degrees)).beside(colorfulChessboard(n-1, color.spin(100.degrees))))
-          }
+          
+    // colorfulChessboard(2, Color.royalBlue).draw()
 
-// ----- Points, Paths, and Polygons ----- 
+
+//----------------------------------------------------------- Points, Paths, and Polygons --------------------------------------------------------------
+
 
     def polygonPoints(sides: Int, radius: Int): Image =
       val dot = Image.circle(5).fillColor(Color.darkViolet)
+      val turn = (360 / sides).degrees
       def loop(count: Int ): Image =
         count match
           case 0 => dot.at(Point(radius, 0.degrees))
-          case n => dot.at(Point(radius, (360 / sides).degrees)).on(loop(n - 1))
+          case n => dot.at(Point(radius, turn * n)).on(loop(n - 1))
       loop(sides)
+
+    // polygonPoints(10, 50).draw()
+
+
+// ----- Exercise: Paths to Polygons ----- 
+    def regularPolygon(sides: Int, radius: Double, color: Color) : Image =
+      val turn = (360 /sides).degrees
+      def loop(count: Int) : ClosedPath =
+        count match 
+          case 0 => ClosedPath.empty.moveTo(radius, 0.degrees)
+          case n => loop(n-1).lineTo(radius, turn * n)
+
+      Image.path(loop(sides)).strokeColor(color).strokeWidth(3.0)
+
+      // regularPolygon(5, 100).draw()
+
+// -----  Going Further... Concentric Polygons ----- 
+
+    def concentricPolygons(count: Int, sides: Int, radius: Int, color: Color) : Image = 
+      def loop(count: Int): Image =
+        count match 
+          case 0 => regularPolygon(sides, radius, color)
+          case n => loop(n-1).on(regularPolygon(sides + n, radius + (20.0 * n), color.spin((5* n).degrees)))
+      loop(count)
+
+    // concentricPolygons(8, 4, 50, Color.pink).draw()
+            
+// -----  Polygon Spiral ----- 
+
+    def polygonSpiral(count: Int, sides: Int, radius: Int, color: Color): Image =
+      def loop(count: Int): Image =
+        count match 
+          case 0 => regularPolygon(sides, radius, color)
+          case n => loop(n-1).on(regularPolygon(sides, radius +(20.0 * n), color.spin((n % 2 * 180).degrees))).rotate((n * 0.5).degrees)
+      loop(count)
+
+   // polygonSpiral(8, 4, 50, Color.red).draw()
+
+//  ----- Star Polygons ----- 
+
+    def starPolygons(sides: Int, radius: Int, skip: Int) : Image =
+      val turn = (360 / sides).degrees
+      def loop(count: Int): ClosedPath =
+        count match 
+          case 0 => ClosedPath.empty.moveTo(radius, 0.degrees)
+          case n => loop(n-1).lineTo(radius, turn * n * skip)
+
+      Image.path(loop(sides))
+
+    //starPolygons(20, 50, 9).draw()
+
+    
+//  ----- Curvygons ----- 
+
+//skipped
+
+//----------------------------------------------------------- Functions and Flowers --------------------------------------------------------------
+
+//  ----- Exercise: Function Literals ----- 
+
+
+//(x : Int) => Math.pow(x, 2)
+//(x : Int) => x * x
+
+//(color: Color) => color.spin(15.degrees)
+
+// (image : Image) => 
+//   image.beside(image.rotate(90.degrees))
+//     .beside(image.rotate(180.degrees))
+//     .beside(image.rotate(-90.degrees))
+//     .beside(image)
+
+//  ----- Fun with Functions ----- 
+
+
+
+def fold(count: Int, build: (Int, Image) => Image): Image =
+  count match 
+    case 0 => Image.empty
+    case n => build(n, fold(count - 1, build))
+
+val gradientBoxes: (Int, Image) => Image =
+  (count, image) =>
+    Image
+      .square(50)
+      .fillColor(Color.royalBlue.spin(10.degrees * count))
+      .noStroke
+      .beside(image)
+
+fold(5, gradientBoxes)
+
 
       //---- test for artwork:
     
@@ -186,26 +288,25 @@ import doodle.java2d.*
 
     //vertices.draw()
 
+enum Pitch:
+  val referenceFrequency: Double = 440.0 // A4 frequency in Hz
+  val ratio: Double = Math.pow(2, 1.0 / 12.0) // Ratio between semitones
+  def calculateFrequency(referenceFrequency: Double, steps: Int) : Double =
+    steps match
+      case 0 => referenceFrequency
+      case n => referenceFrequency * Math.pow(ratio, steps)
+  case C, D, E, F, G, A, B
 
 
 
 
 
 
-    //stacks(3).draw()
-    //alternatingRow(5).draw()
-    // funRow(5).draw()
-    // cross(10).draw()
-    // chessboard(4).draw()
-    // sierpinski(3).draw()
-    // chessboardTwo(3).draw()
-    //  boxesTwo(3).draw()
-    // gradientBoxes(4, Color.royalBlue).draw()
-    // concentricCircles(5, 200, Color.royalBlue).draw()
-    //colorfulChessboard(2, Color.royalBlue).draw()
 
 
-    //polygonPoints(5, 50).draw()
+   
+  
+
    
   
 

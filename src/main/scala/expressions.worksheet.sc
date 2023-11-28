@@ -102,10 +102,3 @@ Image.triangle(100,50).draw()
   .above(Image.rectangle(25,10).fillColor(Color.brown))
   .above(Image.rectangle(60,30).noStroke.fillColor(Color.darkGreen)))
   .draw()
-
-
-      
-    
-
-
-
